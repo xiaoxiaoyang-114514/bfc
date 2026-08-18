@@ -1,7 +1,7 @@
+use bfc::*;
 use std::env;
 use std::fs;
 use std::process::Command;
-use bfc::*;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -18,7 +18,7 @@ fn main() {
     let status = Command::new("rustc")
         .arg(format!("{}.rs", name))
         .arg("-o")
-        .arg(format!("{}",name))
+        .arg(format!("{}", name))
         .status()
         .unwrap();
     println!("Finished compiling {name}.rs");

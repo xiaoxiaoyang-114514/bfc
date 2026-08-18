@@ -4,44 +4,75 @@ pub fn bfrs(src: &str) -> String {
     if src_bytes.contains(&44) {
         rscode.push("use std::io::Read;".to_string());
     }
+    let mut floor: usize = 1;
     rscode.push("fn main() {".to_string());
-    rscode.push("let mut ptr = 0;".to_string());
-    rscode.push("let mut mem: Vec<u8> = vec![0];".to_string());
+    rscode.push("    let mut ptr = 0;".to_string());
+    rscode.push("    let mut mem: Vec<u8> = vec![0];".to_string());
     if src_bytes.contains(&44) {
-        rscode.push("let mut input = std::io::stdin().bytes();".to_string());
+        rscode.push("    let mut input = std::io::stdin().bytes();".to_string());
     }
-
-
-    let mut line = 0;
-    let mut c: u8;
-    while line < src_bytes.len(){
-        c = src_bytes[line];
-        if c == 62 {
-            rscode.push("ptr += 1;".to_string());
-            rscode.push("if ptr >= mem.len() {mem.push(0);}".to_string());
-        } else if c == 60 {
-            rscode.push("if ptr == 0{panic!(\"{}\",\"the index is negative.\".to_string());}".to_string());
-            rscode.push("ptr -= 1;if (mem[ptr+1] == 0) && (mem.len() == ptr + 2) {mem.pop();}".to_string());
-        } else if c == 43 {
-            rscode.push("mem[ptr] = mem[ptr].wrapping_add(1);".to_string());
-        } else if c == 45 {
-            rscode.push("mem[ptr] = mem[ptr].wrapping_sub(1);".to_string());
-        } else if c == 46 {
-            rscode.push("print!(\"{}\",mem[ptr] as char);".to_string());
-        } else if c == 44 {
-            rscode.push("mem [ptr] = match input.next() {Some(Ok(c)) => c,_ => 0,};".to_string());
-        } else if c == 91 {
-             rscode.push("while mem[ptr] != 0{".to_string());
-        } else if c == 93 {
-             rscode.push("}".to_string());
+    let mut temp: isize = 0;
+    let mut flag: bool = false;
+    for c in src_bytes {
+        match c {
+            62 => {
+                flag = true;
+                rscode.push(format!("{}ptr += 1;"," ".repeat(floor * 4)).to_string());
+                rscode.push(format!("{0}if ptr >= mem.len() {{\n{0}    mem.push(0);\n{0}}}", " ".repeat(floor * 4)).to_string());
+            }
+            60 => {
+                flag = true;
+                rscode.push(
+                    format!("{0}if ptr == 0 {{\n{0}    eprintln!(\"{{}}\", \"the index is negative.\".to_string());\n{0}    std::process::exit(1);\n{0}}};", " ".repeat(floor * 4))
+                        .to_string(),
+                );
+                rscode.push(
+                    format!("{0}ptr -= 1;\n{0}if (mem[ptr+1] == 0) && (mem.len() == ptr + 2) {{\n{0}    mem.pop();\n{0}}}", " ".repeat(floor * 4))
+                        .to_string(),
+                );
+            }
+            43 => {
+                temp += 1;
+            }
+            45 => {
+                temp -= 1;
+            }
+            46 => {
+                flag = true;
+                rscode.push(format!("{0}print!(\"{{}}\", mem[ptr] as char);", " ".repeat(floor * 4)).to_string());
+            }
+            44 => {
+                flag = true;
+                rscode
+                    .push(format!("{0}mem [ptr] = match input.next() {{{0}    Some(Ok(c)) => c,\n{0}    _ => 0,{0}}};", " ".repeat(floor * 4)).to_string());
+            }
+            91 => {
+                flag = true;
+                rscode.push(format!("{0}while mem[ptr] != 0 {{", " ".repeat(floor * 4)).to_string());
+                floor += 1;
+            }
+            93 => {
+                flag = true;
+                floor -= 1;
+                rscode.push(format!("{0}}}", " ".repeat(floor * 4)).to_string());
+            }
+            _ => {
+                flag = true;
+            }
         }
-        line += 1;
+
+        if flag {
+            if temp > 0 {
+                rscode.push(format!("{}mem[ptr] = mem[ptr].wrapping_add({});", " ".repeat(floor * 4), temp).to_string());
+            } else if temp < 0 {
+                rscode.push(format!("{}mem[ptr] = mem[ptr].wrapping_sub({});", " ".repeat(floor * 4), 0 - temp).to_string());
+            }
+            flag = false;
+        }
+
     }
 
     rscode.push("}".to_string());
     let code = rscode.join("\n");
     return code.clone();
-
-
 }
-

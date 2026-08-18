@@ -32,8 +32,17 @@ cargo run -- <程序.bf>
 编译并运行：
 
 ```bash
-cargo run -- hello.bf
-./hello
+cargo run -- examples/hello.bf
+```
+
+Unix / Unix-like
+```bash
+./examples/hello
+```
+
+Windows
+```powershell
+./examples/hello.exe
 ```
 
 ## 支持的指令
