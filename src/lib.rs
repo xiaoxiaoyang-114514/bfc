@@ -23,7 +23,7 @@ pub fn bfrs(src: &str) -> String {
             60 => {
                 flag = true;
                 rscode.push(
-                    format!("{0}if ptr == 0 {{\n{0}    eprintln!(\"{{}}\", \"the index is negative.\".to_string())\n{0}}};", " ".repeat(floor * 4))
+                    format!("{0}if ptr == 0 {{\n{0}    eprintln!(\"{{}}\", \"the index is negative.\".to_string());\n{0}    std::process::exit(1);\n{0}}};", " ".repeat(floor * 4))
                         .to_string(),
                 );
                 rscode.push(
