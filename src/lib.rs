@@ -1,4 +1,4 @@
-pub fn bfrs(src: &str) -> String {
+pub fn bfrs(src: &str) -> Result<String, String> {
     let src_bytes = src.as_bytes();
     let mut rscode: Vec<String> = Vec::new();
     if src_bytes.contains(&44) {
@@ -12,6 +12,7 @@ pub fn bfrs(src: &str) -> String {
         rscode.push("    let mut input = std::io::stdin().bytes();".to_string());
     }
     let mut temp: isize = 0;
+    let mut temp_ptr = 0;
     for c in src_bytes {
         match c {
             62 => {
@@ -21,6 +22,7 @@ pub fn bfrs(src: &str) -> String {
                     rscode.push(format!("{}mem[ptr] = mem[ptr].wrapping_sub({});", " ".repeat(floor * 4), 0 - temp).to_string());
                 }
                 temp = 0;
+                temp_ptr += 1;
                 rscode.push(format!("{}ptr += 1;"," ".repeat(floor * 4)).to_string());
                 rscode.push(format!("{0}if ptr >= mem.len() {{\n{0}    mem.push(0);\n{0}}}", " ".repeat(floor * 4)).to_string());
             }
@@ -31,10 +33,10 @@ pub fn bfrs(src: &str) -> String {
                     rscode.push(format!("{}mem[ptr] = mem[ptr].wrapping_sub({});", " ".repeat(floor * 4), 0 - temp).to_string());
                 }
                 temp = 0;
-                rscode.push(
-                    format!("{0}if ptr == 0 {{\n{0}    eprintln!(\"{{}}\", \"the index is negative.\".to_string());\n{0}    std::process::exit(1);\n{0}}};", " ".repeat(floor * 4))
-                        .to_string(),
-                );
+                temp_ptr -= 1;
+                if temp_ptr < 0 {
+                    return Err("The index is negative.".to_string());
+                }
                 rscode.push(
                     format!("{0}ptr -= 1;\n{0}if (mem[ptr+1] == 0) && (mem.len() == ptr + 2) {{\n{0}    mem.pop();\n{0}}}", " ".repeat(floor * 4))
                         .to_string(),
@@ -89,7 +91,7 @@ pub fn bfrs(src: &str) -> String {
 
     rscode.push("}".to_string());
     let code = rscode.join("\n");
-    return code.clone();
+    return Ok(code.clone());
 }
 
 

@@ -11,7 +11,13 @@ fn main() {
         Err(e) => panic!("{e}"),
     };
     println!("Translating {name} to Rust...");
-    let rscode = bfrs(&src);
+    let rscode = match bfrs(&src) {
+        Ok(s) => s,
+        Err(e) => {
+            eprintln!("Err: {e}");
+            std::process::exit(1);
+        }
+    };
     println!("Writing {name}.rs...");
     fs::write(format!("{}.rs", name), rscode).unwrap();
     println!("Compiling {name}.rs...");
