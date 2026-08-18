@@ -5,7 +5,7 @@ use std::process::Command;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    let name = ((args[1].split(".")).collect::<Vec<_>>())[0];
+    let name = (args[1].split(".").collect::<Vec<_>>())[args[1].split(".").collect::<Vec<_>>().len()-2];
     let src = match fs::read_to_string(args[1].clone()) {
         Ok(a) => a,
         Err(e) => panic!("{e}"),
