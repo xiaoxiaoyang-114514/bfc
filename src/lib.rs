@@ -91,7 +91,7 @@ pub fn bfrs(src: &str) -> Result<String, String> {
 
     rscode.push("}".to_string());
     let code = rscode.join("\n");
-    return Ok(code.clone());
+    return Ok(code);
 }
 
 
