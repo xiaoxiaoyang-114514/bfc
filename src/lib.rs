@@ -15,7 +15,7 @@ pub fn bfrs(src: &str) -> Result<String, String> {
     let mut temp_ptr = 0;
     for c in src_bytes {
         match c {
-            62 => {
+            b'>' => {
                 if temp > 0 {
                     rscode.push(format!("{}mem[ptr] = mem[ptr].wrapping_add({});", " ".repeat(floor * 4), temp).to_string());
                 } else if temp < 0 {
@@ -26,7 +26,7 @@ pub fn bfrs(src: &str) -> Result<String, String> {
                 rscode.push(format!("{}ptr += 1;"," ".repeat(floor * 4)).to_string());
                 rscode.push(format!("{0}if ptr >= mem.len() {{\n{0}    mem.push(0);\n{0}}}", " ".repeat(floor * 4)).to_string());
             }
-            60 => {
+            b'<' => {
                 if temp > 0 {
                     rscode.push(format!("{}mem[ptr] = mem[ptr].wrapping_add({});", " ".repeat(floor * 4), temp).to_string());
                 } else if temp < 0 {
@@ -42,9 +42,9 @@ pub fn bfrs(src: &str) -> Result<String, String> {
                         .to_string(),
                 );
             },
-            43 => temp += 1,
-            45 => temp -= 1,
-            46 => {
+            b'+' => temp += 1,
+            b'-' => temp -= 1,
+            b'.' => {
                 if temp > 0 {
                     rscode.push(format!("{}mem[ptr] = mem[ptr].wrapping_add({});", " ".repeat(floor * 4), temp).to_string());
                 } else if temp < 0 {
@@ -53,7 +53,7 @@ pub fn bfrs(src: &str) -> Result<String, String> {
                 temp = 0;
                 rscode.push(format!("{0}print!(\"{{}}\", mem[ptr] as char);", " ".repeat(floor * 4)).to_string());
             },
-            44 => {
+            b',' => {
                 if temp > 0 {
                     rscode.push(format!("{}mem[ptr] = mem[ptr].wrapping_add({});", " ".repeat(floor * 4), temp).to_string());
                 } else if temp < 0 {
@@ -63,7 +63,7 @@ pub fn bfrs(src: &str) -> Result<String, String> {
                 rscode
                     .push(format!("{0}mem [ptr] = match input.next() {{{0}    Some(Ok(c)) => c,\n{0}    _ => 0,{0}}};", " ".repeat(floor * 4)).to_string());
             },
-            91 => {
+            b'[' => {
                 if temp > 0 {
                     rscode.push(format!("{}mem[ptr] = mem[ptr].wrapping_add({});", " ".repeat(floor * 4), temp).to_string());
                 } else if temp < 0 {
@@ -73,7 +73,7 @@ pub fn bfrs(src: &str) -> Result<String, String> {
                 rscode.push(format!("{0}while mem[ptr] != 0 {{", " ".repeat(floor * 4)).to_string());
                 floor += 1;
             },
-            93 => {
+            b']' => {
                 if temp > 0 {
                     rscode.push(format!("{}mem[ptr] = mem[ptr].wrapping_add({});", " ".repeat(floor * 4), temp).to_string());
                 } else if temp < 0 {
