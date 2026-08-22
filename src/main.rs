@@ -2,10 +2,15 @@ use bfc::*;
 use std::env;
 use std::fs;
 use std::process::Command;
+use std::path::Path;
+use timelog::Timer;
 
 fn main() {
+    let mut timer = Timer::new();
+    timer.time("compiling");
     let args: Vec<String> = env::args().collect();
-    let name = (args[1].split(".").collect::<Vec<_>>())[args[1].split(".").collect::<Vec<_>>().len()-2];
+    let path = Path::new(&args[1]);
+    let name = path.file_stem().unwrap().to_str().unwrap();
     let src = match fs::read_to_string(args[1].clone()) {
         Ok(a) => a,
         Err(e) => panic!("{e}"),
@@ -29,4 +34,6 @@ fn main() {
         .unwrap();
     println!("Finished compiling {name}.rs");
     println!("{status}");
+    let duration: f64= timer.time_log("compiling", true);
+    println!("Compiled {} for {} ms",name , duration);
 }
