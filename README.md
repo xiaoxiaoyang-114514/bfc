@@ -21,7 +21,6 @@ cargo run -- <程序.bf>
 - `<程序>.rs` —— 翻译后的 Rust 源码
 - `<程序>` —— 编译出的可执行文件
 
-***因为某些原因，目前不能使用带“.”的相对路径，请参考下方的示例***
 
 ## 示例
 
@@ -34,7 +33,7 @@ cargo run -- <程序.bf>
 编译并运行：
 
 ```bash
-cargo run -- examples/hello.bf
+cargo run -- ./examples/hello.bf
 ```
 
 Unix / Unix-like
